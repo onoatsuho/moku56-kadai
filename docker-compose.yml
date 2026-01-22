@@ -1,7 +1,5 @@
 version: '3.7'
-
 services:
-
   php-apache:
     build: ./php
     volumes:
@@ -9,15 +7,19 @@ services:
     restart: always
     ports:
       - "80:80"
-
+    depends_on:
+      - mysql
   mysql:
     build: ./mysql
     volumes:
       - db_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 'password'
-
+      MYSQL_DATABASE: 'wiki_db'           
+      MYSQL_USER: 'wiki_user'               
+      MYSQL_PASSWORD: 'wiki_pass'           
   phpmyadmin:
     depends_on:
       - mysql
@@ -27,6 +29,5 @@ services:
     restart: always
     ports:
       - "8080:80"
-
 volumes:
     db_data: {}
